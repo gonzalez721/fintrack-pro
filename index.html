@@ -438,9 +438,129 @@ textarea{resize:vertical;min-height:60px;line-height:1.5;}
   .blob,#cg{display:none!important;}
   *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
 }
+
+/* ══ LOGIN LAYER ══ */
+#loginLayer{position:fixed;inset:0;z-index:9000;background:var(--bg2);display:flex;align-items:center;justify-content:center;padding:20px;}
+#loginLayer.gone{display:none;}
+.ls{display:none;width:100%;max-width:390px;animation:fadein .3s var(--expo);}
+.ls.on{display:block;}
+.login-card{background:var(--surf);border-radius:24px;padding:28px 26px;position:relative;isolation:isolate;text-align:center;}
+.login-card::before{content:'';position:absolute;inset:0;border-radius:24px;padding:1px;background:linear-gradient(135deg,rgba(94,106,210,.45),rgba(139,92,246,.2),rgba(255,255,255,.04));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;}
+.login-logo{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--ind),#8B5CF6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 28px rgba(94,106,210,.4),0 0 55px rgba(94,106,210,.14);}
+.login-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.5px;margin-bottom:3px;}
+.login-sub{font-size:11px;color:var(--t3);margin-bottom:22px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;}
+.prof-card{display:flex;align-items:center;gap:13px;background:var(--raised);border:1px solid var(--border);border-radius:13px;padding:12px 15px;cursor:pointer;transition:all .18s var(--expo);text-align:left;width:100%;margin-bottom:8px;}
+.prof-card:hover{border-color:var(--bhi);background:var(--indD);transform:translateX(3px);}
+.prof-card:active{transform:scale(.98);}
+.prof-em{font-size:30px;line-height:1;flex-shrink:0;}
+.prof-name{font-size:14px;font-weight:600;font-family:'Syne',sans-serif;}
+.prof-sub{font-size:10.5px;color:var(--t3);margin-top:1.5px;}
+.prof-arr{margin-left:auto;color:var(--t3);font-size:16px;}
+.em-grid{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:11px 0 16px;}
+.em-opt{font-size:24px;padding:6px;border-radius:9px;border:2px solid transparent;cursor:pointer;transition:all .13s;line-height:1;}
+.em-opt:hover{background:var(--raised);}
+.em-opt.sel{border-color:var(--ind);background:var(--indD);}
+.pin-dots{display:flex;gap:15px;justify-content:center;margin:18px 0 22px;}
+.pd{width:14px;height:14px;border-radius:50%;border:2px solid var(--t3);transition:all .17s var(--spr);}
+.pd.on{background:var(--ind);border-color:var(--ind);transform:scale(1.15);}
+.pd.err{background:var(--red);border-color:var(--red);}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:220px;margin:0 auto;}
+.nb{background:var(--raised);border:1px solid var(--border);border-radius:12px;padding:13px 10px;font-family:'Syne',sans-serif;font-size:19px;font-weight:700;color:var(--text);cursor:pointer;transition:all .11s;line-height:1;}
+.nb:hover{background:var(--indD);border-color:var(--bhi);}
+.nb:active{transform:scale(.9);}
+.nb.act{font-size:14px;color:var(--t2);}
+.s-profile{display:flex;align-items:center;gap:9px;padding:11px 13px 13px;border-bottom:1px solid var(--border);}
+.s-prof-em{font-size:24px;line-height:1;flex-shrink:0;}
+.s-prof-name{font-size:12.5px;font-weight:600;font-family:'Syne',sans-serif;}
+.s-prof-sub{font-size:9.5px;color:var(--t3);margin-top:1px;}
+.s-prof-btn{margin-left:auto;background:none;border:none;color:var(--t3);cursor:pointer;font-size:15px;padding:3px;border-radius:5px;transition:all .13s;flex-shrink:0;}
+.s-prof-btn:hover{color:var(--red);background:var(--redD);}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
 </style>
 </head>
 <body>
+
+<!-- ═════════════════ LOGIN LAYER ═══ -->
+<div id="loginLayer">
+
+  <!-- Screen 1: Lista de perfiles -->
+  <div class="ls on" id="ls-list">
+    <div class="login-card">
+      <div class="login-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="login-title">FinTrack Pro</div>
+      <div class="login-sub">control financiero personal</div>
+      <div id="prof-list"></div>
+      <button class="btn btn-g" style="width:100%;justify-content:center;margin-top:4px;" onclick="showCreate()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Crear nuevo perfil
+      </button>
+    </div>
+  </div>
+
+  <!-- Screen 2: Crear perfil -->
+  <div class="ls" id="ls-create">
+    <div class="login-card">
+      <div style="font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:4px;">Crear mi perfil</div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:20px;">Tus datos serán privados con un PIN</div>
+
+      <div style="text-align:left;margin-bottom:14px;">
+        <label>Elige tu avatar</label>
+        <div class="em-grid" id="em-grid"></div>
+      </div>
+
+      <div class="fg" style="text-align:left;">
+        <label>Tu nombre *</label>
+        <input id="cr-name" type="text" placeholder="¿Cómo te llamas?" maxlength="24">
+      </div>
+
+      <div class="fg" style="text-align:left;">
+        <label>PIN de 4 dígitos *</label>
+        <input id="cr-pin" type="password" inputmode="numeric" placeholder="••••" maxlength="4" pattern="\d{4}">
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn btn-g" style="flex:1;justify-content:center;" onclick="showList()">← Volver</button>
+        <button class="btn btn-p" style="flex:2;justify-content:center;" onclick="createProfile()">Crear Perfil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Ingresar PIN -->
+  <div class="ls" id="ls-pin">
+    <div class="login-card">
+      <div id="pin-avatar" style="font-size:52px;line-height:1;margin-bottom:10px;"></div>
+      <div id="pin-name" style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:4px;"></div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Ingresa tu PIN</div>
+
+      <div class="pin-dots">
+        <div class="pd" data-i="0"></div>
+        <div class="pd" data-i="1"></div>
+        <div class="pd" data-i="2"></div>
+        <div class="pd" data-i="3"></div>
+      </div>
+
+      <div class="numpad">
+        <button class="nb" onclick="np(1)">1</button>
+        <button class="nb" onclick="np(2)">2</button>
+        <button class="nb" onclick="np(3)">3</button>
+        <button class="nb" onclick="np(4)">4</button>
+        <button class="nb" onclick="np(5)">5</button>
+        <button class="nb" onclick="np(6)">6</button>
+        <button class="nb" onclick="np(7)">7</button>
+        <button class="nb" onclick="np(8)">8</button>
+        <button class="nb" onclick="np(9)">9</button>
+        <button class="nb act" onclick="npBack()">⌫</button>
+        <button class="nb" onclick="np(0)">0</button>
+        <button class="nb act" onclick="npCheck()" id="np-ok">→</button>
+      </div>
+
+      <button onclick="showList()" style="background:none;border:none;color:var(--t3);font-size:12px;cursor:pointer;margin-top:16px;font-family:'Inter',sans-serif;">← Cambiar perfil</button>
+    </div>
+  </div>
+
+</div>
 
 <div class="blob b1"></div>
 <div class="blob b2"></div>
@@ -459,6 +579,18 @@ textarea{resize:vertical;min-height:60px;line-height:1.5;}
         <div class="s-tag">pro · control</div>
       </div>
     </div>
+  </div>
+
+  <!-- Profile widget -->
+  <div class="s-profile" id="s-profile">
+    <div class="s-prof-em" id="s-prof-em">👤</div>
+    <div>
+      <div class="s-prof-name" id="s-prof-name">Mi Perfil</div>
+      <div class="s-prof-sub">perfil activo</div>
+    </div>
+    <button class="s-prof-btn" onclick="logout()" title="Cerrar sesión">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
   </div>
 
   <div class="s-nav">
@@ -777,6 +909,152 @@ textarea{resize:vertical;min-height:60px;line-height:1.5;}
 <!-- ═════════════════ SCRIPT ═══ -->
 <script>
 // ─────────────────────
+//  PROFILE MANAGER
+// ─────────────────────
+const AVATARS = ['😊','😎','🧑','👨','👩','🧔','👱','🦸','💼','🚀','⭐','🔥','🦊','🐻','💎','🎯','🏆','🌟'];
+let pinEntry = '', pinProfileId = '';
+
+async function hashPIN(pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('ftSalt2024_'+pin));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+const PM = {
+  profiles: [],
+  load() { const r=localStorage.getItem('ft_profiles_v1'); this.profiles=r?JSON.parse(r):[]; },
+  save() { localStorage.setItem('ft_profiles_v1', JSON.stringify(this.profiles)); },
+  get(id) { return this.profiles.find(p=>p.id===id); },
+  dataKey(id) { return 'ft_data_'+id; },
+  async create(name, emoji, pin) {
+    const id='p'+uid(), hash=await hashPIN(pin);
+    this.profiles.push({id,name,emoji,pinHash:hash,createdAt:Date.now()});
+    this.save(); return id;
+  },
+  async verify(id, pin) {
+    const p=this.get(id); if(!p) return false;
+    return (await hashPIN(pin))===p.pinHash;
+  },
+  delete(id) {
+    this.profiles=this.profiles.filter(p=>p.id!==id);
+    this.save(); localStorage.removeItem(this.dataKey(id));
+  }
+};
+
+// ── Login screens ──
+function showList() {
+  document.querySelectorAll('.ls').forEach(s=>s.classList.remove('on'));
+  document.getElementById('ls-list').classList.add('on');
+  const prof = PM.profiles;
+  const el = document.getElementById('prof-list');
+  if (!prof.length) {
+    el.innerHTML = `<div style="text-align:center;padding:20px 0;color:var(--t3);font-size:13px;">Aún no tienes perfiles.<br>Crea el tuyo para empezar.</div>`;
+  } else {
+    el.innerHTML = prof.map(p=>`
+      <button class="prof-card" onclick="showPIN('${p.id}')">
+        <span class="prof-em">${p.emoji}</span>
+        <div><div class="prof-name">${p.name}</div><div class="prof-sub">Tus gastos personales</div></div>
+        <span class="prof-arr">›</span>
+      </button>`).join('');
+  }
+}
+
+function showCreate() {
+  document.querySelectorAll('.ls').forEach(s=>s.classList.remove('on'));
+  document.getElementById('ls-create').classList.add('on');
+  // Build emoji grid
+  let sel = AVATARS[0];
+  document.getElementById('em-grid').innerHTML = AVATARS.map((e,i)=>
+    `<span class="em-opt${i===0?' sel':''}" onclick="selEm(this,'${e}')" data-em="${e}">${e}</span>`
+  ).join('');
+  document.getElementById('cr-name').value='';
+  document.getElementById('cr-pin').value='';
+  setTimeout(()=>document.getElementById('cr-name').focus(),100);
+}
+
+function selEm(el, em) {
+  document.querySelectorAll('.em-opt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+async function createProfile() {
+  const name = document.getElementById('cr-name').value.trim();
+  const pin  = document.getElementById('cr-pin').value.trim();
+  const emoji = document.querySelector('.em-opt.sel')?.dataset.em || '😊';
+  if (!name) { toast('Ingresa tu nombre','err'); return; }
+  if (!/^\d{4}$/.test(pin)) { toast('PIN debe ser 4 dígitos','err'); return; }
+  const id = await PM.create(name, emoji, pin);
+  startApp(id, true);
+}
+
+function showPIN(profileId) {
+  pinProfileId = profileId; pinEntry = '';
+  const p = PM.get(profileId);
+  document.querySelectorAll('.ls').forEach(s=>s.classList.remove('on'));
+  document.getElementById('ls-pin').classList.add('on');
+  document.getElementById('pin-avatar').textContent = p.emoji;
+  document.getElementById('pin-name').textContent   = p.name;
+  updateDots();
+}
+
+function np(digit) {
+  if (pinEntry.length >= 4) return;
+  pinEntry += digit; updateDots();
+  if (pinEntry.length === 4) setTimeout(npCheck, 80);
+}
+
+function npBack() { pinEntry=pinEntry.slice(0,-1); updateDots(); }
+
+async function npCheck() {
+  if (pinEntry.length < 4) return;
+  const ok = await PM.verify(pinProfileId, pinEntry);
+  if (ok) {
+    startApp(pinProfileId, false);
+  } else {
+    pinEntry = '';
+    document.querySelectorAll('.pd').forEach(d=>{ d.classList.add('err'); d.classList.remove('on'); });
+    setTimeout(()=>document.querySelectorAll('.pd').forEach(d=>d.classList.remove('err','on')), 700);
+    toast('PIN incorrecto','err');
+  }
+}
+
+function updateDots() {
+  document.querySelectorAll('.pd').forEach((d,i)=>{
+    d.classList.toggle('on', i < pinEntry.length);
+  });
+}
+
+function startApp(profileId, isNew) {
+  sessionStorage.setItem('ft_session', profileId);
+  S.profileId = profileId;
+  S.load(isNew);
+  // Update sidebar
+  const p = PM.get(profileId);
+  document.getElementById('s-prof-em').textContent   = p.emoji;
+  document.getElementById('s-prof-name').textContent = p.name;
+  // Hide login layer
+  document.getElementById('loginLayer').classList.add('gone');
+  // Render app
+  renderHome();
+  // GSAP entrance
+  if(typeof gsap!=='undefined'){
+    gsap.from('.sidebar',{x:-25,opacity:0,duration:.65,ease:'expo.out'});
+    gsap.from('.qa-card',{y:20,opacity:0,duration:.7,ease:'expo.out',delay:.1});
+    gsap.from('.mstats .mst',{y:14,opacity:0,duration:.6,stagger:.07,ease:'expo.out',delay:.35});
+  }
+  setTimeout(()=>document.getElementById('qa-amount')?.focus(), 400);
+  // Blobs
+  document.querySelectorAll('.blob').forEach((b,i)=>setTimeout(()=>b.style.opacity='1',300+i*200));
+}
+
+function logout() {
+  sessionStorage.removeItem('ft_session');
+  S.profileId = null;
+  document.getElementById('loginLayer').classList.remove('gone');
+  document.querySelectorAll('.blob').forEach(b=>b.style.opacity='0');
+  showList();
+}
+
+// ─────────────────────
 //  CONSTANTS
 // ─────────────────────
 const MONTHS  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -789,15 +1067,19 @@ const PALETTE = ['#5E6AD2','#059669','#EF4444','#D97706','#9333EA','#0EA5E9','#E
 const S = {
   page:'home', month:new Date().getMonth(), year:new Date().getFullYear(),
   qaType:'expense', qaCat:null, selColor:PALETTE[0],
-  editId:null, delId:null, optOpen:false,
+  editId:null, delId:null, optOpen:false, profileId:null,
   accounts:[], transactions:[], categories:[], budgets:{},
 
-  load(){
-    const r=localStorage.getItem('ft_v5');
-    if(r){const d=JSON.parse(r);this.accounts=d.accounts||this.defAcc();this.transactions=d.transactions||[];this.categories=d.categories||this.defCats();this.budgets=d.budgets||{};}
-    else{this.accounts=this.defAcc();this.categories=this.defCats();this.transactions=this.seed();this.persist();}
+  load(isNew=false){
+    const key = this.profileId ? PM.dataKey(this.profileId) : 'ft_v5';
+    const r=localStorage.getItem(key);
+    if(r&&!isNew){const d=JSON.parse(r);this.accounts=d.accounts||this.defAcc();this.transactions=d.transactions||[];this.categories=d.categories||this.defCats();this.budgets=d.budgets||{};}
+    else{this.accounts=this.defAcc();this.categories=this.defCats();this.transactions=[];this.budgets={};this.persist();}
   },
-  persist(){localStorage.setItem('ft_v5',JSON.stringify({accounts:this.accounts,transactions:this.transactions,categories:this.categories,budgets:this.budgets}));},
+  persist(){
+    const key = this.profileId ? PM.dataKey(this.profileId) : 'ft_v5';
+    localStorage.setItem(key,JSON.stringify({accounts:this.accounts,transactions:this.transactions,categories:this.categories,budgets:this.budgets}));
+  },
 
   defAcc(){
     return[
@@ -1396,19 +1678,20 @@ let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>
 // ─────────────────────
 //  INIT
 // ─────────────────────
-S.load();
+PM.load();
 updateMLabel();
 buildCP();
 
-// Blobs fade in
-document.querySelectorAll('.blob').forEach((b,i)=>setTimeout(()=>b.style.opacity='1',300+i*200));
+// Check for active session (persists while tab is open)
+const _session = sessionStorage.getItem('ft_session');
+const _profile  = _session ? PM.get(_session) : null;
 
-// GSAP entrance
-if(typeof gsap!=='undefined'){
-  gsap.from('.sidebar',{x:-25,opacity:0,duration:.65,ease:'expo.out'});
-  gsap.from('.qa-card',{y:20,opacity:0,duration:.7,ease:'expo.out',delay:.1});
-  gsap.from('.mstats .mst',{y:14,opacity:0,duration:.6,stagger:.07,ease:'expo.out',delay:.35});
-  gsap.from('.today-row > *',{y:10,opacity:0,duration:.55,stagger:.1,ease:'expo.out',delay:.55});
+if (_profile) {
+  // Resume session without re-entering PIN
+  startApp(_session, false);
+} else {
+  // Show login screen
+  showList();
 }
 
 renderHome();
